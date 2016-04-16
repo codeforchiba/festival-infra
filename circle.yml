@@ -1,0 +1,18 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  pre:
+    - gcloud --quiet components update kubectl
+    - gcloud config set project $GCP_PROJECT
+    - gcloud container clusters get-credentials festival
+    - docker build -t $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM .
+
+deployment:
+  release:
+    branch: feature/introduce-circleci
+    commands:
+      - gcloud docker push $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
+      - kubectl rolling-update proxy --image=$GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
+
