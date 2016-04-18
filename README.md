@@ -1,23 +1,12 @@
 # festival-proxy
 
-お祭りデータセンターで、リバースプロキシとして利用するサーバーの Dockerfile を管理するリポジトリです。
+お祭りデータセンターで、本番運用環境にてリバースプロキシとして利用するサーバーの Dockerfile を管理するリポジトリです。
 
 ## 使い方
 
-以下の 3つの環境変数を `docker run` 時に指定することで動作を規定します。
+Google Cloud Platform(以下、GCP) 上で、動作することを前提に構築しています。GCP では、Google Cointainer Engine(以下、GKE) を利用します。
 
-- FESTIVAL_SERVER_NAME
-- PROXY_PASS_HOST
-- PROXY_PASS_PORT
+GKE では、Kubernetes を用いているので、ここで必要となるコンポーネントを作るための設定ファイルも含めています。
 
-### FESTIVAL_SERVER_NAME
-
-外部から参照するホスト名
-
-### PROXY_PASS_HOST
-
-処理を委譲するサーバーのホスト名(or IP アドレス)
-
-### PROXY_PASS_PORT
-
-処理を委譲するサーバーのポート番号
+* Replication Controller
+* Load Balancer as a Service
