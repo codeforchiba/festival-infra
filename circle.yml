@@ -13,6 +13,11 @@ dependencies:
     - gcloud container clusters get-credentials festival
     - docker build -t $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM .
 
+test:
+  override:
+    - docker run -d -p 80:80 $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM; sleep 10
+    - curl --retry 10 --retry-delay 5 -v http://localhost
+
 deployment:
   release:
     branch: feature/introduce-circleci
