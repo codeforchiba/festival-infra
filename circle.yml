@@ -20,7 +20,7 @@ test:
 
 deployment:
   release:
-    branch: feature/introduce-circleci
+    branch: master
     commands:
       - gcloud docker push $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
       - kubectl rolling-update proxy --image=$GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
