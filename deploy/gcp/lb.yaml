@@ -2,9 +2,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: reverse-proxy
+  namespace: cfc-festival
 spec:
   selector:
     app: proxy
+    environment: production
   ports:
     -
       protocol: "TCP"
