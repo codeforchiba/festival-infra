@@ -2,16 +2,16 @@ kind: Service
 apiVersion: v1
 metadata:
   name: reverse-proxy
-  namespace: cfc-festival
+  namespace: cfc-festival-staging
 spec:
   selector:
     app: proxy
-    environment: production
+    environment: staging
   ports:
     -
       protocol: "TCP"
       port: 80
       targetPort: 80
-      nodePort: 30091
-  loadBalancerIP: 104.199.129.176
+      nodePort: 30092
+  loadBalancerIP: 104.155.238.192
   type: LoadBalancer

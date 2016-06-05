@@ -2,18 +2,18 @@ kind: ReplicationController
 apiVersion: v1
 metadata:
   name: proxy
-  namespace: cfc-festival
+  namespace: cfc-festival-staging
 spec:
   replicas: 1
   selector:
     app: proxy
-    environment: production
+    environment: staging
   template:
     metadata:
       labels:
         app: proxy
         tier: gateway
-        environment: production
+        environment: staging
     spec:
       containers:
         -
