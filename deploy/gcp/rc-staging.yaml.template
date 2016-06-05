@@ -1,0 +1,29 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: proxy
+  namespace: cfc-festival-staging
+spec:
+  replicas: 1
+  selector:
+    app: proxy
+    environment: staging
+  template:
+    metadata:
+      labels:
+        app: proxy
+        tier: gateway
+        environment: staging
+    spec:
+      containers:
+        -
+          name: festival-proxy
+          image: ${GCP_REGISTRY_ENDPOINT}/${GCP_PROJECT}/festival-proxy:v${CIRCLE_BUILD_NUM}
+          ports:
+            -
+              containerPort: 80
+              name: http
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 50m
