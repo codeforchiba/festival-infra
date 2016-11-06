@@ -11,6 +11,8 @@ dependencies:
     - gcloud config set compute/zone $GCP_ZONE
     - gcloud config set project $GCP_PROJECT
     - gcloud container clusters get-credentials festival
+  override:
+    - docker info
     - docker build -t $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM --rm=false .
 
 test:
@@ -19,17 +21,26 @@ test:
     - kubectl version
 
 deployment:
-  release:
+  production:
     branch: master
     commands:
-      - gcloud docker push $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
-      - kubectl rolling-update proxy --image=$GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM --namespace=cfc-festival
+      - gcloud docker -- push $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
+      - kubectl rolling-update $CURRENT_RC_NAME proxy-v$CIRCLE_BUILD_NUM --image=$GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM --namespace=cfc-festival:
+          environment:
+            CURRENT_RC_NAME: $(kubectl get rc --namespace=cfc-festival | grep '^proxy' | cut -d ' ' -f 1)
+  staging:
+    branch: develop
+    commands:
+      - gcloud docker -- push $GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM
+      - kubectl rolling-update $CURRENT_RC_NAME proxy-v$CIRCLE_BUILD_NUM  --image=$GCP_REGISTRY_ENDPOINT/$GCP_PROJECT/festival-proxy:v$CIRCLE_BUILD_NUM --namespace=cfc-festival-staging:
+          environment:
+            CURRENT_RC_NAME: $(kubectl get rc --namespace=cfc-festival | grep '^proxy' | cut -d ' ' -f 1)
 
 general:
   branches:
     ignore:
-      - develop
       - /feature\/.*/
       - /hotfix\/.*/
     only:
       - master
+      - develop
