@@ -1,19 +1,21 @@
 kind: ReplicationController
 apiVersion: v1
 metadata:
-  name: proxy
+  name: proxy-v${CIRCLE_BUILD_NUM}
   namespace: cfc-festival-staging
 spec:
   replicas: 1
   selector:
     app: proxy
     environment: staging
+    version: v${CIRCLE_BUILD_NUM}
   template:
     metadata:
       labels:
         app: proxy
         tier: gateway
         environment: staging
+        version: v${CIRCLE_BUILD_NUM}
     spec:
       containers:
         -
@@ -25,5 +27,7 @@ spec:
               name: http
               protocol: TCP
           resources:
+            limits:
+              cpu: 75m
             requests:
               cpu: 50m
